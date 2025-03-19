@@ -1717,6 +1717,7 @@ MonoBehaviour:
   inputValue: {x: 0, y: 0, z: 0}
   inputValueLastFrame: {x: 0, y: 0, z: 0}
   inputInitialized: 0
+  startpos: {x: 0, y: 0, z: 0}
 --- !u!1 &1573433106
 GameObject:
   m_ObjectHideFlags: 0

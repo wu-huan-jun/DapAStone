@@ -13,6 +13,7 @@ public class throwedObiect : MonoBehaviour
     [SerializeField] private Vector3 inputValueLastFrame;//上一帧的平滑输入向量
     public bool inputInitialized;//输入值是否已经归零
     Rigidbody rb;
+    public Vector3 startpos;
     // [Header("Debug sliders")]
     // [SerializeField] private Slider mouseXSlider;
     // [SerializeField] private Slider mouseYSlider;
@@ -22,6 +23,7 @@ public class throwedObiect : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        startpos = transform.position;
         Cursor.lockState = CursorLockMode.Locked;
         inputValueLastFrame = inputValue;
         rb = GetComponent<Rigidbody>();
@@ -49,6 +51,15 @@ public class throwedObiect : MonoBehaviour
                 rb.AddForce((inputValue - inputValueLastFrame) * forceMutiplier, ForceMode.Acceleration);//当鼠标加速移动时，给刚体施加力
             }
             inputValueLastFrame = inputValue;
+        }
+    }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            transform.position = startpos;
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
         }
     }
 }
