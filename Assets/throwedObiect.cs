@@ -15,11 +15,13 @@ public class throwedObiect : MonoBehaviour
     public bool inputInitialized;//输入值是否已经归零
     Rigidbody rb;
     public Vector3 startpos;
+    public List<Vector2> grasspositions;
 
     [Header("Grass")]
     [SerializeField] private GameObject grass;
-    [SerializeField] private float grassPerSecond;
-    [SerializeField] private float t;
+    [SerializeField] private float grassCoolDownTime = 1;
+    [SerializeField] private float timer;
+    [SerializeField] private float grassGridLength = 5;//草地格子的边长
     // [Header("Debug sliders")]
     // [SerializeField] private Slider mouseXSlider;
     // [SerializeField] private Slider mouseYSlider;
@@ -59,6 +61,27 @@ public class throwedObiect : MonoBehaviour
             inputValueLastFrame = inputValue;
         }
     }
+    void InstantiateGrass()
+    {
+
+        Vector2 instantiatePlace = new Vector3(((int)(transform.position.x / grassGridLength) + (transform.position.x < 0 ? 0 : 1)) * grassGridLength,
+                                              ((int)(transform.position.z / grassGridLength) + (transform.position.z < 0 ? 0 : 1)) * grassGridLength);
+
+        Debug.Log(instantiatePlace);
+
+        foreach (Vector2 pos in grasspositions)
+        {
+            if (pos == instantiatePlace)
+            {
+                Debug.Log("草！这个地方已经有草了");
+                return ;
+            }
+        }
+        grasspositions.Add(instantiatePlace);
+        Grassland grassland = Instantiate(grass, new Vector3(instantiatePlace.x, -11.42f, instantiatePlace.y) + Vector3.up * -0.5f, Quaternion.identity).GetComponent<Grassland>();
+        grassland.enabled = true;
+        timer = 0;
+    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
@@ -67,15 +90,12 @@ public class throwedObiect : MonoBehaviour
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
         }
-        t += Time.deltaTime;
-        if (t >= 1 / grassPerSecond)
+        timer += Time.deltaTime;
+        if (timer >= grassCoolDownTime)
         {
-            if (grass != null&&transform.position.y<-10)
+            if (grass != null)
             {
-               Grassland grassland = Instantiate(grass, new Vector3((int)transform.position.x,(int)transform.position.y,(int)transform.position.z) 
-               + transform.up * -0.5f, Quaternion.identity).GetComponent<Grassland>();
-               grassland.enabled = true;
-                t = 0;
+                InstantiateGrass();
             }
         }
     }
