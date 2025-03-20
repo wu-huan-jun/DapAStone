@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 using UnityEngine.UI;
@@ -14,6 +15,11 @@ public class throwedObiect : MonoBehaviour
     public bool inputInitialized;//输入值是否已经归零
     Rigidbody rb;
     public Vector3 startpos;
+
+    [Header("Grass")]
+    [SerializeField] private GameObject grass;
+    [SerializeField] private float grassPerSecond;
+    [SerializeField] private float t;
     // [Header("Debug sliders")]
     // [SerializeField] private Slider mouseXSlider;
     // [SerializeField] private Slider mouseYSlider;
@@ -60,6 +66,17 @@ public class throwedObiect : MonoBehaviour
             transform.position = startpos;
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
+        }
+        t += Time.deltaTime;
+        if (t >= 1 / grassPerSecond)
+        {
+            if (grass != null&&transform.position.y<-10)
+            {
+               Grassland grassland = Instantiate(grass, new Vector3((int)transform.position.x,(int)transform.position.y,(int)transform.position.z) 
+               + transform.up * -0.5f, Quaternion.identity).GetComponent<Grassland>();
+               grassland.enabled = true;
+                t = 0;
+            }
         }
     }
 }
